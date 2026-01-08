@@ -1,0 +1,47 @@
+<!-- <mat-card class="heatmap-card">
+  <mat-card-content>
+    <div class="controls">
+      <mat-button-toggle-group [(ngModel)]="viewType" (change)="updateHeatmap()">
+        <mat-button-toggle value="origin">
+          <mat-icon>trip_origin</mat-icon>
+          Origins
+        </mat-button-toggle>
+        <mat-button-toggle value="destination">
+          <mat-icon>location_on</mat-icon>
+          Destinations
+        </mat-button-toggle>
+        <mat-button-toggle value="both">
+          <mat-icon>route</mat-icon>
+          Both
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <div class="stats">
+        <div class="stat-item">
+          <mat-icon>directions_car</mat-icon>
+          <span>{{ filteredTrips.length }} trips</span>
+        </div>
+        <div class="stat-item">
+          <mat-icon>straighten</mat-icon>
+          <span>{{ totalDistance.toFixed(1) }} km total</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading trip data...</p>
+    </div>
+
+    <div *ngIf="error" class="error-container">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="loadTrips()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div> -->
+
+    <div #mapContainer class="map-container"></div>
+  <!-- </mat-card-content>
+</mat-card> -->

@@ -1,0 +1,136 @@
+<div class="app-container">
+  <!-- Header -->
+  <mat-toolbar class="header">
+    <div class="header-content">
+      <h1 class="header-title">Dashboard Mobilità Cittadina</h1>
+      <div class="header-subtitle">Mappa - Origine e destinazione</div>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <!-- Sidebar -->
+    <mat-sidenav mode="side" opened class="sidenav">
+      <div class="sidebar-content">
+        <!-- <h2 class="sidebar-title">
+          <mat-icon>list</mat-icon>
+          Select Transport
+        </h2> -->
+
+        <mat-form-field appearance="outline" class="transport-select">
+          <mat-label>Filtri</mat-label>
+          <mat-select
+            [(ngModel)]="selectedTransport"
+            (selectionChange)="onTransportChange()"
+            [disabled]="loading"
+          >
+            <mat-option
+              *ngFor="let transport of transports"
+              [value]="transport"
+            >
+              <span class="option-content">
+                <span>{{ formatName(transport.name) }}</span>
+              </span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading transports...</p>
+        </div>
+
+        <div *ngIf="error" class="error-container">
+          <mat-icon color="warn">error</mat-icon>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" (click)="loadTransports()">
+            <mat-icon>refresh</mat-icon>
+            Retry
+          </button>
+        </div>
+
+        <!-- Statistics Chips -->
+        <div *ngIf="filteredTrips.length > 0" class="stats-container">
+          <!-- <mat-chip-set class="stats-chips"> -->
+            <div class="stat-chip">
+              <span class="chip-value">{{ avgDistance.toFixed(1) }} km</span
+              ><br />
+              <span class="chip-label">Distanza media percorsa</span>
+            </div>
+
+            <div class="stat-chip">
+              <span class="chip-value">{{ avgTimeMinutes.toFixed(0) }} min</span
+              ><br />
+              <span class="chip-label">Tempo medio di spostamento</span>
+            </div>
+
+            <div class="stat-chip">
+              <span class="chip-value">{{ avgCost.toFixed(2) }} €</span
+              ><br />
+              <span class="chip-label">Costo medio degli spostamenti</span>
+            </div>
+
+            <div class="stat-chip footprint-chip">
+              <span class="chip-value">{{ totalFootprint.toFixed(1) }} t</span><br />
+              <span class="chip-label">CO₂ emessa</span>
+            </div>
+          <!-- </mat-chip-set> -->
+        </div>
+
+        <!-- Transport Usage Distribution -->
+        <div
+          *ngIf="transports.length > 0 && trips.length > 0"
+          class="distribution-container"
+        >
+          <h3 class="distribution-title">Mezzi di trasporto utilizzati</h3>
+
+          <div class="transport-list">
+            <div
+              *ngFor="let transport of transports"
+              class="transport-item"
+              [class.active]="selectedTransport?.id === transport.id"
+              (click)="selectTransportFromList(transport)"
+            >
+              <div class="transport-info">
+                <div class="transport-details">
+                  <span class="transport-label">{{
+                    formatName(transport.name)
+                  }}</span>
+                  <span class="transport-stats"
+                    >{{
+                      getTransportPercentage(transport.id).toFixed(1)
+                    }}%</span
+                  >
+                </div>
+              </div>
+              <mat-progress-bar
+                mode="determinate"
+                [value]="getTransportPercentage(transport.id)"
+                [color]="
+                  selectedTransport?.id === transport.id ? 'primary' : 'accent'
+                "
+              >
+              </mat-progress-bar>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-sidenav>
+
+    <!-- Main Content -->
+    <mat-sidenav-content class="main-content">
+      <div class="content-wrapper">
+        <!-- Heatmap Component -->
+        <app-mobility-heatmap
+          [filterTransportId]="selectedTransportId"
+        ></app-mobility-heatmap>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+  <!-- Footer -->
+  <mat-toolbar class="footer">
+    <span>© 2026 Transport Management System</span>
+    <span class="spacer"></span>
+    <span>Powered by Angular 21 & Material Design</span>
+  </mat-toolbar>
+</div>
