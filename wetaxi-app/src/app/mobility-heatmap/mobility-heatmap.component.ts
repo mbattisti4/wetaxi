@@ -1,23 +1,12 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
-
-interface Trip {
-  id: number;
-  meanOfTransport: number;
-  timeStart: string;
-  timeEnd: string;
-  people: number;
-  coordOrigin: { lat: number; lng: number };
-  coordDestination: { lat: number; lng: number };
-  distance: number;
-}
+import { TripsService, Trip } from '../services/trips.service';
 
 declare const google: any;
 
@@ -49,9 +38,8 @@ export class MobilityHeatmapComponent implements OnInit, AfterViewInit, OnChange
 
   private map: any;
   private heatmap: any;
-  private apiUrl = 'http://localhost:3000/api/trips';
 
-  constructor(private http: HttpClient) {}
+  constructor(private tripsService: TripsService) {}
 
   ngOnInit() {
     this.loadTrips();
@@ -87,7 +75,7 @@ export class MobilityHeatmapComponent implements OnInit, AfterViewInit, OnChange
     }
 
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCdCyQQyZC74gri7rqCbYNZgzIvL8uI-G4&libraries=visualization`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization`;
     script.async = true;
     script.defer = true;
     script.onload = () => {
@@ -100,7 +88,7 @@ export class MobilityHeatmapComponent implements OnInit, AfterViewInit, OnChange
     this.loading = true;
     this.error = '';
 
-    this.http.get<Trip[]>(this.apiUrl).subscribe({
+    this.tripsService.loadTrips().subscribe({
       next: (data) => {
         this.trips = data;
         this.filterTrips();
@@ -138,7 +126,6 @@ export class MobilityHeatmapComponent implements OnInit, AfterViewInit, OnChange
   }
 
   updateHeatmap() {
-    console.log("updateHeatmap");
     if (!this.map || this.filteredTrips.length === 0) return;
 
     // Remove existing heatmap

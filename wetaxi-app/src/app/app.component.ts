@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MobilityHeatmapComponent } from './mobility-heatmap/mobility-heatmap.component';
+import { TripsService } from './services/trips.service';
 
 interface Transport {
   id: number;
@@ -75,7 +76,7 @@ export class AppComponent implements OnInit {
   private apiUrl = 'http://localhost:3000/api/transports';
   private tripsApiUrl = 'http://localhost:3000/api/trips';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tripsService: TripsService) {}
 
   ngOnInit() {
     this.loadTransports();
@@ -101,7 +102,7 @@ export class AppComponent implements OnInit {
   }
 
   loadTrips() {
-    this.http.get<Trip[]>(this.tripsApiUrl).subscribe({
+    this.tripsService.loadTrips().subscribe({
       next: (data) => {
         this.trips = data;
         this.calculateStats();
@@ -109,7 +110,7 @@ export class AppComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading trips:', err);
-      },
+      }
     });
   }
 
